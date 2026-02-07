@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Traduire</title>
+
+<link rel="stylesheet" href="style.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">TRADUIRE</div>
+  <ul class="nav-links">
+    <li class="nav-btn" onclick="goHistory()">History</li>
+    <li class="nav-btn" onclick="goAbout()">About</li>
+    <li class="login-btn" onclick="goAuth()">Sign In</li>
+  </ul>
+</nav>
+
+<!-- Main Card -->
+<div class="container">
+<div class="card">
+
+<!-- Language Row -->
+<div class="lang-row">
+
+<div>
+<label>Translate From</label>
+<select id="fromLang">
+<option value="en">English</option>
+<option value="fr">French</option>
+<option value="de">German</option>
+<option value="es">Spanish</option>
+<option value="hi">Hindi</option>
+<option value="ml">Malayalam</option>
+<option value="ta">Tamil</option>
+<option value="te">Telugu</option>
+<option value="ar">Arabic</option>
+<option value="ja">Japanese</option>
+<option value="ko">Korean</option>
+<option value="zh">Chinese</option>
+<option value="ru">Russian</option>
+</select>
+</div>
+
+<button class="swap-btn" onclick="swapLang()">
+<i class="fa-solid fa-arrows-left-right"></i>
+</button>
+
+<div>
+<label>Translate To</label>
+<select id="toLang">
+<option value="ja">Japanese</option>
+<option value="en">English</option>
+<option value="fr">French</option>
+<option value="de">German</option>
+<option value="es">Spanish</option>
+<option value="hi">Hindi</option>
+<option value="ml">Malayalam</option>
+<option value="ta">Tamil</option>
+<option value="te">Telugu</option>
+<option value="ar">Arabic</option>
+<option value="ko">Korean</option>
+<option value="zh">Chinese</option>
+<option value="ru">Russian</option>
+</select>
+</div>
+
+</div>
+
+<!-- Text Areas -->
+<div class="text-row">
+
+<div class="box">
+<textarea id="inputText" placeholder="Type or paste text to translate..."></textarea>
+<div class="icons">
+  <i class="fa-solid fa-microphone" onclick="startVoiceInput()"></i>
+  <i class="fa-solid fa-volume-high" onclick="speakText('input')"></i>
+</div>
+</div>
+
+<div class="box output">
+<textarea id="outputText" disabled placeholder="Translation will appear here..."></textarea>
+<div class="icons">
+  <i class="fa-solid fa-copy" onclick="copyText()"></i>
+  <i class="fa-solid fa-volume-high" onclick="speakText('output')"></i>
+</div>
+</div>
+
+</div>
+
+<!-- Translate Button -->
+<button class="translate-btn" onclick="translateText()">Translate Now ✨</button>
+
+
+</div>
+</div>
+
+<!-- Footer -->
+<footer>
+<span class="right">System Active · 104+ Languages Supported</span>
+</footer>
+
+<!-- SCRIPT -->
+<script>
+
+function goAbout(){ window.location.href="about.html"; }
+function goAuth(){ window.location.href="auth.html"; }
+function goHistory(){ window.location.href="history.html"; }
+
+/* Swap languages */
+function swapLang(){
+  let from=document.getElementById("fromLang");
+  let to=document.getElementById("toLang");
+  [from.value,to.value]=[to.value,from.value];
+}
+
+/* Copy */
+function copyText(){
+  navigator.clipboard.writeText(
+    document.getElementById("outputText").value
+  );
+  alert("Copied!");
+}
+
+/* TRANSLATION */
+async function translateText(){
+
+  const text=document.getElementById("inputText").value;
+  const from=document.getElementById("fromLang").value;
+  const to=document.getElementById("toLang").value;
+
+  if(!text){
+    alert("Enter text first!");
+    return;
+  }
+
+  try{
+    const res=await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${from}|${to}`
+    );
+
+    const data=await res.json();
+
+    document.getElementById("outputText").value =
+      data.responseData.translatedText;
+
+  }catch{
+    alert("Check internet connection!");
+  }
+}
+
+/*  TEXT TO SPEECH — MUST BE OUTSIDE */
+function speakText(type){
+  let text = "";
+
+  if(type === "input"){
+    text = document.getElementById("inputText").value;
+  } else {
+    text = document.getElementById("outputText").value;
+  }
+
+  if(!text){
+    alert("No text to speak!");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+
+  if(type === "input"){
+    utterance.lang = document.getElementById("fromLang").value;
+  } else {
+    utterance.lang = document.getElementById("toLang").value;
+  }
+
+  utterance.rate = 1;
+  utterance.pitch = 1;
+
+  window.speechSynthesis.speak(utterance);
+}
+
+/*  VOICE TO TEXT */
+function startVoiceInput(){
+
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if(!SpeechRecognition){
+    alert("Speech recognition not supported in this browser");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  // Use selected source language
+  recognition.lang = document.getElementById("fromLang").value;
+
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.start();
+
+  recognition.onresult = function(event){
+    const spokenText = event.results[0][0].transcript;
+    document.getElementById("inputText").value = spokenText;
+  };
+
+  recognition.onerror = function(event){
+    alert("Voice input error: " + event.error);
+  };
+}
+
+</script>
+
+</body>
+</html>

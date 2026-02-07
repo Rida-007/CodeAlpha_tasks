@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Traduire - Authentication</title>
+<head><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee") no-repeat center center fixed;
+  background-size: cover;
+  font-family: Arial, sans-serif;
+}
+
+.card{
+  width:420px;
+  padding:40px;
+  border-radius:20px;
+  backdrop-filter: blur(20px);
+  background: rgba(255,255,255,0.25);
+  box-shadow:0 20px 40px rgba(0,0,0,0.25);
+  text-align:center;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:25px;
+  border:none;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border-radius:25px;
+  border:none;
+  background:black;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  background:#4facfe;
+}
+
+.social{
+  background:white;
+  color:black;
+  border:1px solid #ccc;
+  margin-top:8px;
+}
+
+small{
+  display:block;
+  margin-top:12px;
+  cursor:pointer;
+  font-weight:600;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h2 id="title">Sign In</h2>
+
+  <!-- Full name only for signup -->
+  <input id="name" placeholder="Full Name" style="display:none">
+
+  <input id="email" placeholder="Email Address">
+  <input id="password" type="password" placeholder="Password">
+
+  <!-- Confirm password only for signup -->
+  <input id="confirm" type="password" placeholder="Confirm Password" style="display:none">
+
+  <button onclick="handleAuth()">Continue</button>
+
+  <!-- Social only for signup -->
+  <button class="social" id="google">
+  <i class="fa-brands fa-google"></i> Sign up with Google
+</button>
+
+<button class="social" id="facebook">
+  <i class="fa-brands fa-facebook"></i> Sign up with Facebook
+</button>
+
+
+  <small onclick="toggleMode()" id="toggle">
+    New here? Create account
+  </small>
+</div>
+
+<script>
+let isSignup = false;
+
+function toggleMode(){
+  isSignup = !isSignup;
+
+  document.getElementById("title").innerText =
+    isSignup ? "Create Account" : "Sign In";
+
+  document.getElementById("name").style.display = isSignup ? "block" : "none";
+  document.getElementById("confirm").style.display = isSignup ? "block" : "none";
+  document.getElementById("google").style.display = isSignup ? "block" : "none";
+  document.getElementById("facebook").style.display = isSignup ? "block" : "none";
+
+  document.getElementById("toggle").innerText =
+    isSignup ? "Already have an account? Sign in" : "New here? Create account";
+}
+
+function handleAuth(){
+  let name = document.getElementById("name").value;
+  let email = document.getElementById("email").value;
+  let pass = document.getElementById("password").value;
+  let confirm = document.getElementById("confirm").value;
+
+  if(!email || !pass || (isSignup && (!name || !confirm))){
+    alert("Fill all fields");
+    return;
+  }
+
+  if(isSignup){
+    if(pass !== confirm){
+      alert("Passwords do not match");
+      return;
+    }
+
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userPass", pass);
+
+    alert("Account created successfully!");
+    toggleMode();
+    return;
+  }
+
+  let savedEmail = localStorage.getItem("userEmail");
+  let savedPass = localStorage.getItem("userPass");
+
+  if(email === savedEmail && pass === savedPass){
+    window.location.href = "index.html";
+  } else {
+    alert("Account not found. Please create one.");
+  }
+}
+</script>
+
+</body>
+</html>
