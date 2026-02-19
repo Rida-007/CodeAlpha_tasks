@@ -10,13 +10,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 #nltk.download('punkt_tab')
 #nltk.download('stopwords')
 
-# -----------------------------
-# FAQs
-# -----------------------------
+
 faqs = {
-#-----------------------------
-# General
-#-----------------------------
+
 "Which course is best for beginners?":
 "Python Programming and Web Development are best for beginners.",
 
@@ -101,7 +97,7 @@ faqs = {
 "Does mobile app development provide certificate?":
     "Yes, a certificate is provided for mobile app development course.",
 
-    # ----------------- Python ----------------
+   
     "What is Python programming?":
         "Python is a programming language used for web development, data science, AI, and automation.",
 
@@ -123,7 +119,7 @@ faqs = {
     "Does Python course provide certificate?":
         "Yes, a certificate is provided after successful completion of the Python course.",
 
-    # ---------------- Web Development ----------------
+  
     "What is web development?":
         "Web development involves creating websites using HTML, CSS, JavaScript, and backend technologies.",
 
@@ -145,7 +141,7 @@ faqs = {
     "Does web development provide certificate?":
         "Yes, a certificate is provided after completing the web development course.",
 
-    # ---------------- Data Science ----------------
+   
     "What is data science?":
         "Data science involves analyzing data using statistics, Python, and machine learning.",
 
@@ -164,7 +160,7 @@ faqs = {
     "Is prior knowledge required for data science?":
         "Basic knowledge of mathematics and Python is recommended for data science.",
 
-    # ---------------- Cyber Security ----------------
+    
     "What is cyber security?":
         "Cyber security focuses on protecting systems and networks from cyber attacks.",
 
@@ -183,7 +179,7 @@ faqs = {
     "Is prior knowledge required for cyber security?":
         "Basic knowledge of networking is preferred for cyber security.",
 
-    # ---------------- Mobile App Development ----------------
+   
     "What is mobile app development?":
         "Mobile app development involves creating applications for Android and iOS devices.",
 
@@ -204,9 +200,7 @@ faqs = {
 
 }
 
-# -----------------------------
-# NLP
-# -----------------------------
+
 stop_words = set(stopwords.words('english'))
 
 def preprocess(text):
@@ -232,9 +226,7 @@ def chatbot_response(user_input):
         return "Sorry, I don’t have information about that yet."
     return answers[index]
 
-# -----------------------------
-# UI Functions
-# -----------------------------
+
 def send_message(event=None):
     user_text = entry.get().strip()
     if not user_text:
@@ -262,17 +254,13 @@ def add_message(sender, message, color):
     chat_canvas.update_idletasks()
     chat_canvas.yview_moveto(1)
 
-# -----------------------------
-# Main Window
-# -----------------------------
+
 root = tk.Tk()
 root.title("SkillBuddy – Your Course Companion")
 root.geometry("420x600")
 root.configure(bg="#0B0B0F")
 
-# -----------------------------
-# Chat Area with Scrollbar
-# -----------------------------
+
 chat_canvas = tk.Canvas(root, bg="#0B0B0F", highlightthickness=0)
 scrollbar = ttk.Scrollbar(root, orient="vertical", command=chat_canvas.yview)
 chat_canvas.configure(yscrollcommand=scrollbar.set)
@@ -295,9 +283,7 @@ add_message(
     "#FF4DFF"
 )
 
-# -----------------------------
-# Input Area
-# -----------------------------
+
 entry_frame = tk.Frame(root, bg="#0B0B0F")
 entry_frame.pack(fill="x", pady=10)
 
@@ -324,3 +310,4 @@ send_btn = tk.Button(
 send_btn.pack(side="right", padx=10)
 
 root.mainloop()
+
